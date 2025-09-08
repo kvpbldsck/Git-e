@@ -16,6 +16,8 @@
     <Description>Some useful cli tools for git</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    
+    <UserSecretsId>31a9310f-3c4d-43b2-ab85-da5b7db78d2d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
