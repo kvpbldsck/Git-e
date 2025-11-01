@@ -1,28 +1,22 @@
-﻿using GitE.Models;
-using GitE.Repositories;
+﻿using System.CommandLine;
 
-using YamlDotNet.Serialization;
+using GitE.Cli.Commands;
 
 namespace GitE;
 
-public sealed class Runner(
-    SettingsRepository settingsRepository,
-    ISerializer serializer)
+public sealed class Runner(IEnumerable<ICommand> commands)
 {
-    public void Run()
+    public int Run(string[] args)
     {
-        var project = new Project
-        {
-            Name = "gite",
-            Path = @"D:\projects\personal\git-e",
-        };
-        var settings = new UserSettings
-        {
-            Projects = [ project ],
-        };
+        RootCommand rootCommand = new("GitE - A Git Extension Tool");
 
-        settingsRepository.Save(settings);
-        UserSettings loadedSettings = settingsRepository.Load();
-        Console.WriteLine(serializer.Serialize(loadedSettings));
+        foreach (ICommand command in commands)
+        {
+            rootCommand.Add(command.PrepareCommand());
+        }
+
+        return rootCommand
+            .Parse(args)
+            .Invoke();
     }
 }

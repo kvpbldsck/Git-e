@@ -1,4 +1,5 @@
-﻿using GitE;
+﻿using GitE.Cli.Commands;
+using GitE.Git;
 using GitE.Repositories;
 using GitE.Utils;
 
@@ -7,29 +8,37 @@ using Microsoft.Extensions.DependencyInjection;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-IServiceCollection services = new ServiceCollection()
-    .AddSingleton(PrepareYamlDeserializer())
-    .AddSingleton(PrepareYamlSerializer())
-    .AddSingleton<SettingsRepository>()
-    .AddSingleton<Runner>();
+namespace GitE;
 
-ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-Runner runner = serviceProvider.GetRequiredService<Runner>();
-runner.Run();
-return;
-
-IDeserializer PrepareYamlDeserializer()
+internal static class Program
 {
-    return new StaticDeserializerBuilder(new YamlStaticContext())
-        .WithNamingConvention(UnderscoredNamingConvention.Instance)
-        .Build();
-}
+    public static int Main(string[] args)
+    {
+        IServiceCollection services = new ServiceCollection()
+            .AddSingleton(PrepareYamlDeserializer())
+            .AddSingleton(PrepareYamlSerializer())
+            .AddSingleton<SettingsRepository>()
+            .AddSingleton<Runner>()
+            .AddSingleton<GitWrapper>()
+            .AddSingleton<ICommand, ShowCommitsCommand>();
 
-ISerializer PrepareYamlSerializer()
-{
-    return new StaticSerializerBuilder(new YamlStaticContext())
-        .WithNamingConvention(UnderscoredNamingConvention.Instance)
-        .Build();
-}
+        ServiceProvider serviceProvider = services.BuildServiceProvider();
 
+        Runner runner = serviceProvider.GetRequiredService<Runner>();
+        return runner.Run(args);
+    }
+
+    private static IDeserializer PrepareYamlDeserializer()
+    {
+        return new StaticDeserializerBuilder(new YamlStaticContext())
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .Build();
+    }
+
+    private static ISerializer PrepareYamlSerializer()
+    {
+        return new StaticSerializerBuilder(new YamlStaticContext())
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .Build();
+    }
+}
