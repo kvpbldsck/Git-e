@@ -1,33 +1,40 @@
-using System.Diagnostics;
-
 using GitE.Models.Result;
+using GitE.Utils;
+
+using LibGit2Sharp;
 
 namespace GitE.Git;
 
 public sealed class GitWrapper
 {
-    public Result<string> Log(string format, int commitsAmount) =>
-        RunGitCommand($"log --pretty=format:\"{format}\" -n {commitsAmount}");
-
-    private static Result<string> RunGitCommand(string arguments)
+    public Result<string> Log(int commitsAmount, IFormatter<Commit>? formatter = null)
     {
-        var gitStartInfo = new ProcessStartInfo
+        formatter ??= new DefaultCommitFormatter();
+
+        Repository? repo = null;
+        try
         {
-            FileName = "git",
-            Arguments = arguments,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+            repo = new(Environment.CurrentDirectory);
 
-        using var process = Process.Start(gitStartInfo)!;
-        var output = process.StandardOutput.ReadToEnd();
-        var error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-
-        return process.ExitCode != 0
-            ? GitResultParser.ParseError(error, process.ExitCode)
-            : GitResultParser.ParseSuccess(output);
+            return repo.Commits
+                .Take(commitsAmount)
+                .Select(formatter.Format)
+                .JoinAsString("\n");
+        }
+        catch (RepositoryNotFoundException e)
+        {
+            return ErrorResult.Custom(
+                ErrorType.NotFound,
+                ErrorCodes.Git.NotAGitRepository,
+                "The current directory is not a git repository.");
+        }
+        catch (Exception e)
+        {
+            return ErrorResult.Failure($"Failed to get git log: {e.Message}");
+        }
+        finally
+        {
+            repo?.Dispose();
+        }
     }
 }

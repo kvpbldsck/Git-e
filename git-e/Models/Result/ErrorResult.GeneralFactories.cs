@@ -63,18 +63,6 @@ public readonly partial record struct ErrorResult
         new(code, description, ErrorType.NotFound, metadata);
 
     /// <summary>
-    /// Creates an <see cref="Error"/> of type <see cref="ErrorType.Unauthorized"/> from a code and description.
-    /// </summary>
-    /// <param name="code">The unique error code.</param>
-    /// <param name="description">The error description.</param>
-    /// <param name="metadata">A dictionary which provides optional space for information.</param>
-    public static ErrorResult Unauthorized(
-        string code = ErrorCodes.General.Unauthorized,
-        string description = "An 'Unauthorized' error has occurred.",
-        Dictionary<string, object>? metadata = null) =>
-        new(code, description, ErrorType.Unauthorized, metadata);
-
-    /// <summary>
     /// Creates an <see cref="Error"/> of type <see cref="ErrorType.Forbidden"/> from a code and description.
     /// </summary>
     /// <param name="code">The unique error code.</param>

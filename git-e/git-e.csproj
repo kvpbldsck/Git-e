@@ -19,6 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Humanizer" />
+    <PackageReference Include="LibGit2Sharp" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" />
