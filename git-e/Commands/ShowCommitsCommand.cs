@@ -2,9 +2,18 @@ using System.CommandLine;
 
 using GitE.Git;
 
-namespace GitE.Cli.Commands;
+using Spectre.Console.Cli;
 
-public sealed class ShowCommitsCommand(GitWrapper gitWrapper) : ICommand
+using Command = System.CommandLine.Command;
+
+namespace GitE.Commands;
+
+public sealed class ShowCommitsSettings : CommandSettings
+{
+    
+}
+
+public sealed class ShowCommitsCommand(GitWrapper gitWrapper) : Command<>
 {
     private static readonly Option<int> AmountOption = GetAmountOption();
     private static readonly Argument<DirectoryInfo> RepositoryArgument = GetRepositoryArgument();

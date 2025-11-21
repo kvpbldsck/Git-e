@@ -1,12 +1,14 @@
 ﻿using System.CommandLine;
 
-using GitE.Cli.Commands;
+using GitE.Commands;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitE;
 
 public sealed class Runner(IEnumerable<ICommand> commands)
 {
-    public int Run(string[] args)
+    public int Run(IServiceCollection services, string[] args)
     {
         RootCommand rootCommand = new("GitE - A Git Extension Tool");
 
