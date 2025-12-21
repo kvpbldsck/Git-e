@@ -1,12 +1,17 @@
-﻿using GitE.Cli.Commands;
+﻿using GitE.Commands;
 using GitE.Git;
+using GitE.Infrastructure;
 using GitE.Repositories;
 using GitE.Utils;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Spectre.Console.Cli;
+
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+
+using ICommand = GitE.Commands.ICommand;
 
 namespace GitE;
 
@@ -14,18 +19,29 @@ internal static class Program
 {
     public static int Main(string[] args)
     {
-        IServiceCollection services = new ServiceCollection()
+        var registrar = new DiRegistrar(PrepareDiContainer());
+
+        var app = new CommandApp(registrar);
+        app.Configure(config =>
+        {
+#if DEBUG
+            config.PropagateExceptions();
+            config.ValidateExamples();
+#endif
+        });
+
+        return app.Run(args);
+    }
+
+    private static IServiceCollection PrepareDiContainer()
+    {
+        return new ServiceCollection()
             .AddSingleton(PrepareYamlDeserializer())
             .AddSingleton(PrepareYamlSerializer())
             .AddSingleton<SettingsRepository>()
             .AddSingleton<Runner>()
             .AddSingleton<GitWrapper>()
             .AddSingleton<ICommand, ShowCommitsCommand>();
-
-        ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-        Runner runner = serviceProvider.GetRequiredService<Runner>();
-        return runner.Run(args);
     }
 
     private static IDeserializer PrepareYamlDeserializer()

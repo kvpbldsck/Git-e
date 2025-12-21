@@ -2,9 +2,19 @@ using System.CommandLine;
 
 using GitE.Git;
 
-namespace GitE.Cli.Commands;
+using Spectre.Console.Cli;
 
-public sealed class ShowCommitsCommand(GitWrapper gitWrapper) : ICommand
+using Command = System.CommandLine.Command;
+
+namespace GitE.Commands;
+
+public sealed class ShowCommitsSettings : CommandSettings
+{
+    [CommandOption("-a|--amount")]
+    public int Amount { get; init; } = 15;
+}
+
+public sealed class ShowCommitsCommand(GitWrapper gitWrapper) : Command<ShowCommitsSettings>
 {
     private static readonly Option<int> AmountOption = GetAmountOption();
     private static readonly Argument<DirectoryInfo> RepositoryArgument = GetRepositoryArgument();
@@ -84,4 +94,6 @@ public sealed class ShowCommitsCommand(GitWrapper gitWrapper) : ICommand
 
         return argument;
     }
+
+    public override int Execute(CommandContext context, ShowCommitsSettings settings, CancellationToken cancellationToken) => throw new NotImplementedException();
 }

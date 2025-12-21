@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="Spectre.Console.Cli" />
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="Vecc.YamlDotNet.Analyzers.StaticGenerator" />
     <PackageReference Include="YamlDotNet" />
