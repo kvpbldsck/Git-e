@@ -11,9 +11,13 @@ public static class AppConfigurator
         {
             cfg.SetApplicationName("git-e");
 
-            cfg.AddCommand<ShowCommitsCommand>("commits")
-                .WithAlias("c")
-                .WithDescription("List last commits");
+            cfg.AddCommand<ShowCommitsCommand>(ShowCommitsSettings.CommandName)
+                .WithAlias(ShowCommitsSettings.Alias)
+                .WithDescription(ShowCommitsSettings.Description);
+
+            cfg.AddCommand<ShowBranchesCommand>(ShowBranchesSettings.CommandName)
+                .WithAlias(ShowBranchesSettings.Alias)
+                .WithDescription(ShowBranchesSettings.Description);
         });
 
         return app;

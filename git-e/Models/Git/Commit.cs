@@ -1,4 +1,4 @@
-﻿namespace gite.Models;
+﻿namespace gite.Models.Git;
 
 public sealed record Commit(
     string Id,
