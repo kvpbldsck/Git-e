@@ -18,6 +18,14 @@ public static class AppConfigurator
             cfg.AddCommand<ShowBranchesCommand>(ShowBranchesSettings.CommandName)
                 .WithAlias(ShowBranchesSettings.Alias)
                 .WithDescription(ShowBranchesSettings.Description);
+
+            cfg.AddCommand<StashCommand>(StashSettings.CommandName)
+                .WithAlias(StashSettings.Alias)
+                .WithDescription(StashSettings.Description);
+
+            cfg.AddCommand<UnstashCommand>(UnstashSettings.CommandName)
+                .WithAlias(UnstashSettings.Alias)
+                .WithDescription(UnstashSettings.Description);
         });
 
         return app;
